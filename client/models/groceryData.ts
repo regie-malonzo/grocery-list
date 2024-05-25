@@ -8,4 +8,5 @@ export interface Item {
   todo:      string;
   completed: boolean;
   userID:    number;
+  category?: string
 }

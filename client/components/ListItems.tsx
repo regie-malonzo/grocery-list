@@ -1,6 +1,13 @@
 import React from "react";
+import { Item } from "../models/groceryData";
 
-function ListItem({item, deleteItem}) {
+
+interface ListItemProps {
+  item: Item
+  deleteItem: (id:number) => void
+}
+
+function ListItem({item, deleteItem}: ListItemProps): React.ReactElement {
   return(
     <li>
       {item.todo}
