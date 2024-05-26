@@ -23,9 +23,9 @@ router.get('/', async (req, res) => {
 })
 
 router.post('/add-item', async (req, res) => {
-  const {todo, catergory} = req.body
+  const {todo, category} = req.body
   try {
-   const newItem: Item = await additem(todo, catergory)
+   const newItem: Item = await additem(todo, category)
    res.json(newItem)
 
   }catch(err) {
@@ -40,8 +40,8 @@ router.post('/add-item', async (req, res) => {
 router.delete('/delete-item/:id', async (req, res) => {
   const { id } = req.params
   try {
-    const deletedItem: Item = await deleteItem(Number(id))
-    res.json(deletedItem)
+    await deleteItem(Number(id))
+    res.status(204).send()
     
   }catch(err) {
     if(err instanceof Error){

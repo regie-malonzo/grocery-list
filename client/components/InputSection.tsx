@@ -1,49 +1,37 @@
-import React, { useEffect, useState } from "react";
-import ListItem from "./ListItems";
-import { Item } from "../models/groceryData";
+import React, {useState} from "react";
 
-
-interface Props {
-  items:Item[]
-  deleteItem: (id: number) => void
+interface InputSectionProps {
+  addItem: (todo: string, category: string) => void
 }
 
-const categorizeItems =(items: Item[]): Item[] => {
-  return items.map(item => {
-    if(item.todo.toLocaleLowerCase().includes("meat") || item.todo.toLocaleLowerCase().includes("fish")){
-      return{...item, category: "Meat/Poultry/Fish"}
-    }else if(item.todo.toLocaleLowerCase().includes("pantry")){
-      return{...item, category: "Pantry"}
-    } else if(item.todo.toLocaleLowerCase().includes("fruit") || item.todo.toLocaleLowerCase().includes("vegetables")) {
-      return{...item, category: "Fruit & Vegetables"}
-    }else if (item.todo.toLocaleLowerCase().includes("dairy")){
-      return {...item, category: "Dairy"}
-    } else {
-      return {...item, category: "Home Essentials"}
+const InputSection: React.FC<InputSectionProps> = ({addItem}) => {
+  const [todo, setTodo] = useState('')
+  const [category, setCategory] = useState('Meat/Poultry/Fish')
+  
+  const handleAddItem = () => {
+    if(todo.trim()) {
+      addItem(todo, category)
+      setTodo
     }
-  })
-}
-
-const ListSection: React.FC<Props> = ({ items, deleteItem}) =>{
-  const [categorizeItems, setCategorizesItems] = useState<Item>([])
-  useEffect (() =>{
-    setCategorizesItems(categorizeItems(items))
-  },[items])
-  const categories =['Meat/Poultry/Fish','Pantry', 'Fruit & Vegetables', 'Dairy', 'Home Essentials']
+  }
   return (
-    <div className="list-section">
-      {categories.map(category => (
-        <div key={category} className="category-section">
-          <h2>{category}</h2>
-          <ul>
-            {items.filter(item => item.category === category).map(item => (
-              <ListItem key={item.id} item={item} deleteItem={deleteItem} />
-            ))}
-          </ul>
-          </div>
-      ))}
-
+    <div className="input-section">
+      <input
+        type="text"
+        value={todo}
+        onChange={(e) => setTodo(e.target.value)}
+        placeholder="Enter Item"
+        />
+        <select value={category} onChange={(e) => setCategory(e.target.value)}>
+          <option value="Meat/Poultry/Fish">Meat/Poultry/Fish</option>
+          <option value="Pantry">Pantry</option>
+          <option value="Fruit & Vegetable">Fruit & Vegetables</option>
+          <option value="Dairy">Dairy</option>
+          <option value="Home Essentials">Home Essentials</option>
+        </select>
+        <button onClick={handleAddItem}>Add Item</button>
     </div>
   )
 }
-export default ListSection
+
+export default InputSection

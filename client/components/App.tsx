@@ -1,30 +1,50 @@
-import { useState } from 'react'
-import { getGreeting } from '../apiClient.ts'
-import { useQuery } from '@tanstack/react-query'
+import React, {useState, useEffect} from "react"
+import { Item } from "../models/groceryData"
+import InputSection from "./InputSection"
+import ListSection from './ListSection'
+import { fetchItems, addItem, deleteItem } from "../apiClient"
 
-const App = () => {
-  const [count, setCount] = useState(0)
+const App: React.FC = () => {
+  const [items, setItems] = useState<Item[]>([]);
 
-  const {
-    data: greeting,
-    isError,
-    isPending,
-  } = useQuery({ queryKey: ['greeting', count], queryFn: getGreeting })
+  useEffect(() => {
+    loadItems();
+  }, []);
 
-  if (isPending) return <p>Loading...</p>
+  const loadItems = async () => {
+    try {
+      const items = await fetchItems();
+      setItems(items);
+    } catch (error) {
+      console.log('Error fetching items:', error);
+    }
+  };
+
+  const handleAddItem = async (todo: string, category: string) => {
+    try {
+      const newItem = await addItem(todo, category);
+      setItems([...items, newItem]);
+    } catch (error) {
+      console.error('Error adding item:', error);
+    }
+  };
+
+  const handleDeleteItem = async (id: number) => {
+    try {
+      await deleteItem(id);
+      setItems(items.filter(item => item.id !== id));
+    } catch (error) {
+      console.error('Error deleting item:', error);
+    }
+  };
 
   return (
-    <>
-      {count}
-      <h1 className="text-3xl font-bold underline">{greeting}</h1>
-      {isError && (
-        <p style={{ color: 'red' }}>
-          There was an error retrieving the greeting.
-        </p>
-      )}
-      <button onClick={() => setCount(count + 1)}>Click</button>
-    </>
-  )
-}
+    <div className="main-component">
+      <InputSection addItem={handleAddItem} />
+      <ListSection items={items} deleteItem={handleDeleteItem} />
+    </div>
+  );
+};
+
 
 export default App
