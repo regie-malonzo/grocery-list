@@ -1,3 +1,6 @@
+## Personal Project
+This is a personal project to practice tech i learnt during dev academy
+
 # Boilerplate: React with Express and Vite
 
 This is a starter project that uses Vite to bundle a React app and Express to serve it in production. Express is used in development to serve an API server.
